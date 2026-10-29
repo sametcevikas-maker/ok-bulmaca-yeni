@@ -127,12 +127,27 @@ function insideShape(r,c,n,s){
  return !((r<2||r>n-3)&&(c<2||c>n-3))&&
  !((r===2||r===n-3)&&(c===2||c===n-3));
 }
-function pathClear(a,live,n){
- const [dr,dc]=DIR[a.d];let r=a.r+dr,c=a.c+dc;
- while(r>=0&&r<n&&c>=0&&c<n){
-  if(live.some(b=>b.alive&&b.r===r&&b.c===c))return false;
-  r+=dr;c+=dc;
- }
+
+function pathClear(a, live, n) {
+  return !live.some(b => {
+    if (!b.alive || b.id === a.id) return false;
+
+    // Yukarı bakan ok: aynı sütundaki üst oklar engeldir.
+    if (a.d === 0) return b.c === a.c && b.r < a.r;
+
+    // Sağa bakan ok: aynı satırdaki sağ oklar engeldir.
+    if (a.d === 1) return b.r === a.r && b.c > a.c;
+
+    // Aşağı bakan ok: aynı sütundaki alt oklar engeldir.
+    if (a.d === 2) return b.c === a.c && b.r > a.r;
+
+    // Sola bakan ok: aynı satırdaki sol oklar engeldir.
+    if (a.d === 3) return b.r === a.r && b.c < a.c;
+
+    return false;
+  });
+}
+
  return true;
 }
 function findSolution(){

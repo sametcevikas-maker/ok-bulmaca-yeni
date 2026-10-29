@@ -1,103 +1,159 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f6f5f1">
 <title>Ok Bulmacası</title>
 <style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#222a35;--muted:#7b8490;--line:#e6e5df;--accent:#315d50;--gold:#d9a441;--red:#b94c45}
 *{box-sizing:border-box}
-body{margin:0;background:#0a1020;color:#f4f7ff;font-family:Arial,sans-serif}
-.app{max-width:620px;margin:auto;padding:16px}
-header,.top,.buttons{display:flex;justify-content:space-between;align-items:center;gap:10px}
-h1{font-size:25px;margin:8px 0}
-p{color:#aab8d0}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
-.stat,.panel{background:#131d32;border:1px solid #2a3a57;border-radius:15px;padding:12px;text-align:center}
-.stat strong{display:block;font-size:20px;margin-top:5px}
-.panel{text-align:left;padding:14px}
-#board{width:100%;aspect-ratio:1;position:relative;overflow:hidden;border-radius:12px;background-color:#eaf1fb;background-image:radial-gradient(#a7b9d2 1px,transparent 1px);background-size:13px 13px;touch-action:manipulation}
-.arrow{position:absolute;display:grid;place-items:center;border:0;background:transparent;color:#121b30;padding:0;cursor:pointer}
-.arrow svg{width:100%;height:100%;overflow:visible}
-.arrow:active{scale:.86}
-button{border:1px solid #405474;border-radius:12px;background:#223554;color:white;padding:12px;font-size:14px;font-weight:bold}
-.primary{background:#347cf0}
-.buttons{display:grid;grid-template-columns:1fr 1fr;margin-top:12px}
-.buttons button{width:100%}
-#msg{text-align:center;min-height:40px;padding:12px 2px;color:#c9d8ee}
-footer{text-align:center;color:#8192ae;font-size:12px;margin:16px 0}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.app{max-width:560px;margin:auto;padding:22px 17px 32px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px}
+.brand{font-size:12px;letter-spacing:2.4px;color:var(--muted);font-weight:750}
+h1{font-size:25px;letter-spacing:-.8px;margin:6px 0 0;font-weight:750}
+.iconbtn{width:43px;height:43px;border:1px solid var(--line);background:var(--card);border-radius:50%;font-size:20px;color:var(--ink)}
+.progress-wrap{margin-bottom:19px}
+.progress-label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-bottom:9px}
+.progress{height:5px;background:#e4e3dc;border-radius:10px;overflow:hidden}
+.progress>div{height:100%;width:0;background:var(--accent);transition:width .3s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:17px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 8px;text-align:center}
+.stat span{display:block;font-size:10px;letter-spacing:1.2px;color:var(--muted);font-weight:750}
+.stat strong{display:block;font-size:23px;margin-top:6px;letter-spacing:-.5px}
+.stat small{font-size:11px;color:var(--muted);font-weight:500}
+.gamecard{background:var(--card);border:1px solid var(--line);border-radius:21px;padding:14px;box-shadow:0 8px 28px #202a3508}
+.boardhead{display:flex;justify-content:space-between;align-items:center;padding:3px 3px 14px}
+.boardhead strong{font-size:15px}
+.boardhead span{font-size:12px;color:var(--muted)}
+#board{position:relative;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#f4f3ee;background-image:radial-gradient(#d6d5ce .8px,transparent .8px);background-size:15px 15px;touch-action:manipulation}
+.arrow{position:absolute;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#344c43;transition:transform .22s,opacity .22s,color .15s;z-index:1}
+.arrow svg{width:84%;height:84%;overflow:visible}
+.arrow:active{color:var(--accent);scale:.9}
+.arrow.flying{opacity:0;z-index:4;transition:transform .36s cubic-bezier(.2,.8,.2,1),opacity .3s}
+.arrow.wrong{animation:shake .23s;color:var(--red)}
+@keyframes shake{0%,100%{translate:0}25%{translate:-4px}75%{translate:4px}}
+#message{min-height:43px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;color:var(--muted);padding:8px 2px 2px}
+#message.good{color:var(--accent);font-weight:650}
+#message.bad{color:var(--red)}
+.actions{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:8px;margin-top:12px}
+.btn{border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink);padding:13px 6px;font-size:12px;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.btn:disabled{opacity:.45}
+.secondary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.secondary .btn{padding:11px 6px;color:var(--muted)}
+.footer{text-align:center;font-size:11px;color:#9a9d9d;margin:17px 0 0}
+#overlay{position:fixed;inset:0;background:#18211d77;display:none;align-items:center;justify-content:center;padding:24px;z-index:10}
+#overlay.show{display:flex}
+.modal{background:var(--card);width:100%;max-width:370px;border-radius:23px;padding:26px 22px;text-align:center;box-shadow:0 20px 70px #0002}
+.modal .medal{font-size:43px}
+.modal h2{margin:12px 0 6px;font-size:25px}
+.modal p{font-size:14px;line-height:1.6;color:var(--muted)}
+.stars{font-size:30px;letter-spacing:5px;color:var(--gold);margin:13px 0}
+.modal .btn{width:100%;margin-top:8px;padding:14px}
+@media(min-width:500px){.app{padding-top:30px}.gamecard{padding:19px}.stat{padding:16px}}
 </style>
 </head>
 <body>
 <main class="app">
-<header><div><h1>➜ Ok Bulmacası</h1><p>Oku seç, yolunu aç, tahtadan kaçır.</p></div><button id="restart">↻</button></header>
+<header class="header">
+<div><div class="brand">MİNİMAL • ZEKÂ OYUNU</div><h1>Ok Bulmacası</h1></div>
+<button class="iconbtn" id="restart" aria-label="Yeniden başlat">↻</button>
+</header>
+
+<div class="progress-wrap">
+<div class="progress-label"><span id="progressText">Bölüm 1</span><span id="progressPercent">%0 tamamlandı</span></div>
+<div class="progress"><div id="progressBar"></div></div>
+</div>
+
 <section class="stats">
-<div class="stat">SEVİYE<strong id="lev">1 / 12</strong></div>
-<div class="stat">HAMLE<strong id="moves">0</strong></div>
-<div class="stat">ÇIKAN OK<strong id="gone">0</strong></div>
+<div class="stat"><span>PUAN</span><strong id="score">0</strong></div>
+<div class="stat"><span>HAMLE</span><strong id="moves">0</strong></div>
+<div class="stat"><span>YILDIZ</span><strong id="stars">0 <small>/ 36</small></strong></div>
 </section>
-<section class="panel">
-<div class="top"><div><b id="title">Seviye 1</b><p id="remaining">Oklar hazırlanıyor</p></div></div>
-<div id="board"></div>
-<div id="msg">Önü açık bir oka dokun!</div>
-<div class="buttons">
-<button class="primary" id="hint">💡 İpucu</button>
-<button id="reset">↻ Sıfırla</button>
-<button id="help">❔ Nasıl oynanır</button>
-<button id="next" style="display:none">Sonraki seviye →</button>
+
+<section class="gamecard">
+<div class="boardhead"><strong id="levelTitle">Bölüm 1</strong><span id="remaining">0 ok kaldı</span></div>
+<div id="board" aria-label="Ok bulmacası oyun alanı"></div>
+<div id="message" role="status">Önü açık bir oku seçerek başla.</div>
+<div class="actions">
+<button class="btn primary" id="hint">✦ İpucu</button>
+<button class="btn" id="reset">Yeniden kur</button>
+<button class="btn" id="next" disabled>İleri →</button>
+</div>
+<div class="secondary">
+<button class="btn" id="how">Nasıl oynanır?</button>
+<button class="btn" id="clearSave">İlerlemeyi sıfırla</button>
 </div>
 </section>
-<footer>Telefon ve bilgisayarda oynanabilir</footer>
+<div class="footer">Sakin ol. Yolu bul. Okları temizle.</div>
 </main>
+
+<div id="overlay">
+<div class="modal">
+<div class="medal" id="medal">✦</div>
+<h2 id="modalTitle">Bölüm tamamlandı!</h2>
+<div class="stars" id="starResult">★★★</div>
+<p id="modalText"></p>
+<button class="btn primary" id="continue">Devam et →</button>
+<button class="btn" id="closeModal">Oyuna dön</button>
+</div>
+</div>
+
 <script>
-const configs=[
-[5,13,'diamond'],[6,19,'cross'],[6,22,'maze'],
-[7,27,'diamond'],[7,31,'cross'],[8,38,'maze'],
-[8,43,'diamond'],[9,49,'cross'],[9,55,'maze'],
-[10,62,'diamond'],[10,70,'cross'],[11,82,'maze']
+(()=>{
+const $=id=>document.getElementById(id);
+const DIR=[[-1,0,0],[0,1,90],[1,0,180],[0,-1,270]];
+const LEVELS=[
+[5,13,'diamond'],[6,18,'cross'],[6,21,'maze'],
+[7,26,'diamond'],[7,30,'cross'],[8,36,'maze'],
+[8,41,'diamond'],[9,47,'cross'],[9,52,'maze'],
+[10,58,'diamond'],[10,65,'cross'],[11,76,'maze']
 ];
-const dirs=[[-1,0,0],[0,1,90],[1,0,180],[0,-1,270]];
-let level=0,arrows=[],moves=0,cleared=0,won=false;
-const el=id=>document.getElementById(id);
-function shape(r,c,n,s){
- let x=(c-(n-1)/2)/((n+1)/2),y=(r-(n-1)/2)/((n+1)/2);
+const KEY='okBulmacasiPremium_v1';
+let saved={level:0,score:0,totalStars:0,best:{},unlocked:0};
+try{saved={...saved,...JSON.parse(localStorage.getItem(KEY)||'{}')};}catch(e){}
+let level=Math.min(LEVELS.length-1,Math.max(0,saved.level||0));
+let arrows=[],moves=0,cleared=0,locked=false,won=false;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function insideShape(r,c,n,s){
+ const x=(c-(n-1)/2)/((n+1)/2),y=(r-(n-1)/2)/((n+1)/2);
  if(s==='diamond')return Math.abs(x)+Math.abs(y)<1.17;
  if(s==='cross')return Math.abs(x)<.39||Math.abs(y)<.39;
  return !((r<2||r>n-3)&&(c<2||c>n-3))&&
  !((r===2||r===n-3)&&(c===2||c===n-3));
 }
-function shuffle(a){
- for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
- return a;
-}
-function clear(a,live,n){
- let [dr,dc]=dirs[a.d],r=a.r+dr,c=a.c+dc;
+function pathClear(a,live,n){
+ const [dr,dc]=DIR[a.d];let r=a.r+dr,c=a.c+dc;
  while(r>=0&&r<n&&c>=0&&c<n){
   if(live.some(b=>b.alive&&b.r===r&&b.c===c))return false;
   r+=dr;c+=dc;
  }
  return true;
 }
-function solution(){
- let live=arrows.filter(a=>a.alive).slice(),order=[];
+function findSolution(){
+ const n=LEVELS[level][0],live=arrows.filter(a=>a.alive).slice(),order=[];
  while(live.length){
-  let a=live.find(a=>clear(a,live,configs[level][0]));
+  const a=live.find(x=>pathClear(x,live,n));
   if(!a)return null;
-  order.push(a);live=live.filter(b=>b!==a);
+  order.push(a);live.splice(live.indexOf(a),1);
  }
  return order;
 }
 function generate(){
- let [n,count,s]=configs[level],cells=[];
- for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(shape(r,c,n,s))cells.push({r,c});
- let chosen=shuffle(cells).slice(0,Math.min(count,cells.length));
- let order=shuffle(chosen.slice());
- arrows=chosen.map((p,id)=>({r:p.r,c:p.c,id,d:0,alive:true}));
- // Her ok için, kendisinden sonra çıkarılacak okları engellemeyen bir yön seç.
+ const [n,count,shape]=LEVELS[level],cells=[];
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(insideShape(r,c,n,shape))cells.push({r,c});
+ const chosen=shuffle(cells).slice(0,Math.min(count,cells.length));
+ arrows=chosen.map((p,id)=>({...p,id,d:0,alive:true}));
+ const order=shuffle(arrows.slice());
  order.forEach((a,k)=>{
-  let later=order.slice(k+1);
-  let options=[0,1,2,3].filter(d=>{
-   let [dr,dc]=dirs[d],r=a.r+dr,c=a.c+dc;
+  const later=order.slice(k+1);
+  const options=[0,1,2,3].filter(d=>{
+   const [dr,dc]=DIR[d];let r=a.r+dr,c=a.c+dc;
    while(r>=0&&r<n&&c>=0&&c<n){
     if(later.some(b=>b.r===r&&b.c===c))return false;
     r+=dr;c+=dc;
@@ -106,53 +162,102 @@ function generate(){
   });
   a.d=options[Math.floor(Math.random()*options.length)];
  });
- moves=0;cleared=0;won=false;render();
+ moves=0;cleared=0;won=false;locked=false;
+ $('next').disabled=true;
+ render();message('Önü açık bir oku seçerek başla.');
 }
-function svg(){
- return '<svg viewBox="0 0 40 40"><path d="M20 36V8M9 19L20 8 31 19" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function arrowSvg(){
+ return '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 35V7M9 18L20 7 31 18" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 }
 function render(){
- let [n]=configs[level],board=el('board');board.innerHTML='';
- let size=100/n;
+ const n=LEVELS[level][0],size=100/n,board=$('board');board.innerHTML='';
  arrows.filter(a=>a.alive).forEach(a=>{
-  let b=document.createElement('button');b.className='arrow';b.innerHTML=svg();
+  const b=document.createElement('button');b.className='arrow';b.innerHTML=arrowSvg();
   b.style.left=(a.c*size+size*.08)+'%';b.style.top=(a.r*size+size*.08)+'%';
   b.style.width=(size*.84)+'%';b.style.height=(size*.84)+'%';
-  b.style.transform='rotate('+dirs[a.d][2]+'deg)';
-  b.setAttribute('aria-label','Ok '+(a.r+1)+','+(a.c+1));
-  b.onclick=()=>tap(a.id);board.appendChild(b);
+  b.style.transform='rotate('+DIR[a.d][2]+'deg)';
+  b.setAttribute('aria-label','Ok '+(a.r+1)+', '+(a.c+1));
+  b.onclick=()=>tap(a.id,b);board.appendChild(b);
  });
- el('lev').textContent=(level+1)+' / '+configs.length;
- el('title').textContent='Seviye '+(level+1);
- el('moves').textContent=moves;el('gone').textContent=cleared;
- el('remaining').textContent=(arrows.length-cleared)+' ok kaldı';
- el('next').style.display=won?'block':'none';
- el('next').textContent=level===configs.length-1?'Baştan oyna ↻':'Sonraki seviye →';
+ $('levelTitle').textContent='Bölüm '+(level+1);
+ $('remaining').textContent=(arrows.length-cleared)+' ok kaldı';
+ $('moves').textContent=moves;
+ $('score').textContent=(saved.score||0).toLocaleString('tr-TR');
+ $('stars').innerHTML=(saved.totalStars||0)+' <small>/ '+(LEVELS.length*3)+'</small>';
+ $('progressText').textContent='Bölüm '+(level+1)+' / '+LEVELS.length;
+ $('progressPercent').textContent='%'+Math.round((level/LEVELS.length)*100)+' tamamlandı';
+ $('progressBar').style.width=(level/LEVELS.length*100)+'%';
 }
-function say(t){el('msg').textContent=t}
-function tap(id){
- if(won)return;
- let a=arrows.find(x=>x.id===id&&x.alive);if(!a)return;
+function message(t,type=''){const m=$('message');m.textContent=t;m.className=type;}
+function tap(id,button){
+ if(locked||won)return;
+ const a=arrows.find(x=>x.id===id&&x.alive);if(!a)return;
  moves++;
- if(clear(a,arrows,configs[level][0])){
-  a.alive=false;cleared++;say('✓ Güzel hamle! Bir yol daha açıldı.');
-  if(cleared===arrows.length){won=true;say('🎉 Harika! Bulmacayı çözdün!');}
- }else say('⛔ Bu okun yolu kapalı. Önündeki oku önce çıkar.');
- render();
+ if(pathClear(a,arrows,LEVELS[level][0])){
+  a.alive=false;cleared++;
+  if(button){
+   button.classList.add('flying');
+   const distance=110;
+   const trans=['translateY(-'+distance+'%)','translateX('+distance+'%)','translateY('+distance+'%)','translateX(-'+distance+'%)'][a.d];
+   button.style.transform='rotate('+DIR[a.d][2]+'deg) '+trans+' scale(.65)';
+  }
+  saved.score=(saved.score||0)+100;persist();
+  message('Güzel hamle. Yol açıldı.','good');
+  render();
+  if(cleared===arrows.length)setTimeout(finish,380);
+ }else{
+  if(button){button.classList.remove('wrong');void button.offsetWidth;button.classList.add('wrong');}
+  message('Bu okun yolu kapalı. Önce önündeki oku çıkar.','bad');
+  render();
+  const b=[...$('board').children].find(x=>x.getAttribute('aria-label')==='Ok '+(a.r+1)+', '+(a.c+1));
+  if(b)b.classList.add('wrong');
+ }
 }
-function reset(){generate();say('Yeni tahta hazır. İlk açık oku bul!')}
-el('restart').onclick=reset;el('reset').onclick=reset;
-el('hint').onclick=()=>{
- let a=solution()?.[0];
- if(!a){say('Yeni bir tahta hazırlanıyor.');reset();return;}
- say('İpucu: '+(a.r+1)+'. satır, '+(a.c+1)+'. sütundaki oku dene.');
- let b=[...el('board').children].find(b=>b.getAttribute('aria-label')==='Ok '+(a.r+1)+','+(a.c+1));
- if(b){b.style.color='#0e9f6e';setTimeout(()=>{b.style.color=''},1200);}
+function finish(){
+ if(won)return;won=true;locked=true;
+ const best=moves<=arrows.length+2?3:moves<=arrows.length+6?2:1;
+ const key=String(level+1),old=saved.best[key]||{stars:0,moves:9999};
+ const gained=Math.max(0,best-(old.stars||0));
+ saved.best[key]={stars:Math.max(best,old.stars||0),moves:Math.min(moves,old.moves||9999)};
+ saved.totalStars=(saved.totalStars||0)+gained;
+ saved.unlocked=Math.max(saved.unlocked||0,Math.min(level+1,LEVELS.length-1));
+ saved.score=(saved.score||0)+best*150;persist();render();
+ $('medal').textContent='✦';$('modalTitle').textContent='Bölüm tamamlandı!';
+ $('starResult').textContent='★'.repeat(best)+'☆'.repeat(3-best);
+ $('modalText').textContent=moves+' hamlede tamamladın. '+best+' yıldız kazandın! Puanın: '+saved.score;
+ $('continue').textContent=level===LEVELS.length-1?'Baştan oyna ↻':'Sonraki bölüm →';
+ $('overlay').classList.add('show');$('next').disabled=false;
+ message('Tebrikler! Bölüm tamamlandı.','good');
+}
+function hint(){
+ if(won||locked)return;
+ const sol=findSolution();
+ if(!sol||!sol.length){message('Bir çözüm bulunamadı. Tahtayı yeniden kur.','bad');return;}
+ const a=sol[0];
+ message('İpucu: '+(a.r+1)+'. satır, '+(a.c+1)+'. sütundaki oku seç.','good');
+ const b=[...$('board').children].find(x=>x.getAttribute('aria-label')==='Ok '+(a.r+1)+', '+(a.c+1));
+ if(b){b.style.color='#d09b35';b.style.scale='1.15';setTimeout(()=>{if(b.isConnected){b.style.color='';b.style.scale='';}},1000);}
+}
+function next(){
+ $('overlay').classList.remove('show');locked=false;
+ if(level===LEVELS.length-1){level=0;saved.level=0;}
+ else level++;
+ saved.level=level;persist();generate();
+}
+$('hint').onclick=hint;
+$('restart').onclick=()=>{generate();message('Yeni tahta hazır.');};
+$('reset').onclick=()=>{generate();message('Tahta yeniden kuruldu.');};
+$('next').onclick=next;
+$('continue').onclick=next;
+$('closeModal').onclick=()=>{$('overlay').classList.remove('show');};
+$('how').onclick=()=>message('Okun baktığı yönde önünde başka ok yoksa onu çıkarabilirsin. Tüm okları temizle, yıldızları kazan.');
+$('clearSave').onclick=()=>{
+ if(confirm('Kayıtlı puan, yıldız ve bölüm ilerlemesi silinsin mi?')){
+  saved={level:0,score:0,totalStars:0,best:{},unlocked:0};persist();level=0;generate();message('İlerleme sıfırlandı.');
+ }
 };
-el('help').onclick=()=>say('Her ok baktığı yönde düz ilerler. Önünde ok varsa çıkamaz. Önce yolu açık okları kaldır.');
-el('next').onclick=()=>{level=(level+1)%configs.length;generate();say('Yeni seviye başladı!');};
-generate();
+saved.level=level;persist();generate();
+})();
 </script>
 </body>
 </html>
-

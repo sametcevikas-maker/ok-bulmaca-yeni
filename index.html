@@ -135,13 +135,33 @@ function pathClear(a,live,n){
  }
  return true;
 }
-function findSolution(){
- const n=LEVELS[level][0],live=arrows.filter(a=>a.alive).slice(),order=[];
- while(live.length){
-  const a=live.find(x=>pathClear(x,live,n));
-  if(!a)return null;
-  order.push(a);live.splice(live.indexOf(a),1);
- }
+
+function pathClear(a, live, n) {
+  const dir = DIR[a.d];
+  if (!dir) return false;
+
+  const dr = dir[0];
+  const dc = dir[1];
+  let r = a.r + dr;
+  let c = a.c + dc;
+
+  while (r >= 0 && r < n && c >= 0 && c < n) {
+    const blocked = live.some(b =>
+      b.alive &&
+      b.id !== a.id &&
+      b.r === r &&
+      b.c === c
+    );
+
+    if (blocked) return false;
+
+    r += dr;
+    c += dc;
+  }
+
+  return true;
+}
+
  return order;
 }
 function generate(){

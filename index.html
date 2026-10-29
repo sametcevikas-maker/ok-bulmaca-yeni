@@ -127,13 +127,26 @@ function insideShape(r,c,n,s){
  return !((r<2||r>n-3)&&(c<2||c>n-3))&&
  !((r===2||r===n-3)&&(c===2||c===n-3));
 }
-function pathClear(a,live,n){
- const [dr,dc]=DIR[a.d];let r=a.r+dr,c=a.c+dc;
- while(r>=0&&r<n&&c>=0&&c<n){
-  if(live.some(b=>b.alive&&b.r===r&&b.c===c))return false;
-  r+=dr;c+=dc;
- }
- return true;
+function pathClear(a, live, n) {
+  const dir = DIR[a.d];
+  if (!dir) return false;
+
+  const dr = dir[0];
+  const dc = dir[1];
+
+  return !live.some(b => {
+    if (!b.alive || b.id === a.id) return false;
+
+    if (dc === 0 && b.c === a.c) {
+      return dr === -1 ? b.r < a.r : b.r > a.r;
+    }
+
+    if (dr === 0 && b.r === a.r) {
+      return dc === -1 ? b.c < a.c : b.c > a.c;
+    }
+
+    return false;
+  });
 }
 function findSolution(){
  const n=LEVELS[level][0],live=arrows.filter(a=>a.alive).slice(),order=[];
